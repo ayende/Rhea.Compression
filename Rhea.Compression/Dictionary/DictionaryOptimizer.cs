@@ -20,14 +20,22 @@ namespace Rhea.Compression.Dictionary
         private int[] lcp;
         private SubstringArray substrings;
         private byte[] bytes;
+	    private List<byte[]> _documents = new List<byte[]>();
+
 
         public void Add(byte[] doc)
         {
             starts.Add((int)stream.Position);
             stream.Write(doc, 0, doc.Length);
+			_documents.Add(doc);
         }
 
-        public void Add(string doc)
+	    public IEnumerable<byte[]> Documents
+	    {
+		    get { return _documents; }
+	    }
+
+	    public void Add(string doc)
         {
             Add(Encoding.UTF8.GetBytes(doc));
         }

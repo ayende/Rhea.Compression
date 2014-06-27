@@ -5,7 +5,7 @@ namespace Rhea.Compression.Huffman
 {
 	public class HuffmanTableGenerator
 	{
-		private readonly Heap<HuffmanNode> _priorityQueue = new Heap<HuffmanNode>(256*2 + 1);
+		private readonly Heap<HuffmanNode> _priorityQueue = new Heap<HuffmanNode>(768);
 		private readonly Dictionary<int, HuffmanNode> _leaves = new Dictionary<int, HuffmanNode>();
 
 		public void Add(int symbol, int freq)
@@ -24,7 +24,7 @@ namespace Rhea.Compression.Huffman
 				var x = _priorityQueue.Dequeue();
 				var y = _priorityQueue.Dequeue();
 
-				var parent = new HuffmanNode(-1, x.Freq + y.Freq);
+				var parent = new HuffmanNode(-1, (ushort)(x.Freq + y.Freq));
 				parent.Left = x;
 				parent.Right = y;
 				x.Parent = parent;

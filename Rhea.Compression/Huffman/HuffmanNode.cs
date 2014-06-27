@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Rhea.Compression.Huffman
 {
@@ -17,6 +18,8 @@ namespace Rhea.Compression.Huffman
 			Symbol = symbol;
 			Freq = freq;
 		}
+
+		public bool IsBranch { get { return Symbol == -1; } }
 
 		protected bool Equals(HuffmanNode other)
 		{
@@ -66,5 +69,71 @@ namespace Rhea.Compression.Huffman
 				return "Branch Freq: " + Freq;
 			return "Leaf: " + (char) Symbol + " Freq: " + Freq;
 		}
+
+		public void Save(BinaryWriter writer)
+		{
+			writer.Write(IsBranch);
+			if (!IsBranch)
+			{
+				Write7BitEncodedInt(writer, Symbol);
+				return;
+			}
+			Left.Save(writer);
+			Right.Save(writer);
+		}
+
+		public static HuffmanNode Load(BinaryReader reader, Dictionary<int, HuffmanNode> leaves)
+		{
+			var branch = reader.ReadBoolean();
+			if (branch == false)
+			{
+				var huffmanNode = new HuffmanNode(Read7BitEncodedInt(reader), -2/* we don't actually need this, so we don't save it*/);
+				leaves.Add(huffmanNode.Symbol, huffmanNode);
+				return huffmanNode;
+			}
+			var left = Load(reader, leaves);
+			var right = Load(reader,leaves);
+
+			var parent = new HuffmanNode(-1, -2)
+			{
+				Left = left,
+				Right = right
+			};
+			left.Parent = parent;
+			right.Parent = parent;
+			return parent;
+		}
+
+		protected static void Write7BitEncodedInt(BinaryWriter writer, int value)
+		{
+			uint num = (uint)value;
+
+			while (num >= 128U)
+			{
+				writer.Write((byte)(num | 128U));
+				num >>= 7;
+			}
+
+			writer.Write((byte)num);
+		}
+
+		protected static int Read7BitEncodedInt(BinaryReader reader)
+		{
+			// some names have been changed to protect the readability  
+			int returnValue = 0;
+			int bitIndex = 0;
+
+			while (bitIndex != 35)
+			{
+				byte currentByte = reader.ReadByte();
+				returnValue |= ((int)currentByte & (int)sbyte.MaxValue) << bitIndex;
+				bitIndex += 7;
+
+				if (((int)currentByte & 128) == 0)
+					return returnValue;
+			}
+
+			throw new FormatException("Invalid format for 7 bit encoded string");
+		}  
 	}
 }

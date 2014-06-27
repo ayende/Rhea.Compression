@@ -37,7 +37,7 @@ namespace Rhea.Compression.Huffman
 		public void Dispose()
 		{
 			Flush();
-			if(_leaveOpen)
+			if(_leaveOpen == false)
 				_stream.Dispose();
 		}
 
