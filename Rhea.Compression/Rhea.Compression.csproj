@@ -35,7 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Debug\DebugPackerOutput.cs" />
-    <Compile Include="Debug\DebugUnpackerOoutput.cs" />
+    <Compile Include="Debug\DebugUnpackerOutput.cs" />
     <Compile Include="Dictionary\DictionaryOptimizer.cs" />
     <Compile Include="Huffman\Heap.cs" />
     <Compile Include="Huffman\HuffmanNode.cs" />

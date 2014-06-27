@@ -61,7 +61,7 @@ namespace Rhea.Tryouts
             Console.WriteLine(s);
 
             var substringUnpacker = new SubstringUnpacker(dic);
-            var debugUnpackerOoutput = new DebugUnpackerOoutput(
+            var debugUnpackerOoutput = new DebugUnpackerOutput(
                 new StringReader(s),
                 substringUnpacker);
             debugUnpackerOoutput.Unpack();
