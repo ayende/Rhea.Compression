@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Rhea.Compression
+namespace Rhea.Compression.Dictionary
 {
     public class DictionaryOptimizer
     {

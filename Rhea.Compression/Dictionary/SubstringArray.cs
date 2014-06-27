@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Rhea.Compression
+namespace Rhea.Compression.Dictionary
 {
     public class SubstringArray
     {

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Rhea.Compression;
+using Rhea.Compression.Debug;
+using Rhea.Compression.Dictionary;
 
 namespace Rhea.Tryouts
 {
