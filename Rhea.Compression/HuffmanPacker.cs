@@ -14,8 +14,6 @@ namespace Rhea.Compression
 		public HuffmanPacker(HuffmanTable symbols, HuffmanTable[] offsets)
 		{
 			this.symbols = symbols;
-
-			symbols.DumpTable(Console.Out);
 			this.offsets = offsets;
 		}
 

@@ -10,7 +10,6 @@ namespace Rhea.Compression.Huffman
 	{
 		private readonly Dictionary<int, HuffmanNode> _leaves;
 		private readonly HuffmanNode _root;
-		readonly ThreadLocal<Stack<bool>> _path = new ThreadLocal<Stack<bool>>(() => new Stack<bool>());
 
 		public HuffmanTable(Dictionary<int, HuffmanNode> leaves, HuffmanNode root)
 		{
@@ -23,6 +22,11 @@ namespace Rhea.Compression.Huffman
 			var leaves = new Dictionary<int, HuffmanNode>();
 			var node = HuffmanNode.Load(reader, leaves);
 
+			foreach (var huffmanNode in leaves.Values)
+			{
+				huffmanNode.SetupBitPattern();
+			}
+
 			return new HuffmanTable(leaves, node);
 		}
 
@@ -33,13 +37,11 @@ namespace Rhea.Compression.Huffman
 
 		public void Write(int symbol, OutputBitStream output)
 		{
-			_leaves[symbol].TraverseUp(_path.Value);
-			var path = "";
-			while (_path.Value.Count > 0)
+			var huffmanNode = _leaves[symbol];
+			Console.WriteLine("'{0}' {3} {1} {2}", (char)symbol, huffmanNode.BitPattern, huffmanNode.Bits.Count, symbol);
+			foreach (var bit in huffmanNode.Bits)
 			{
-				var pop = _path.Value.Pop();
-				path += pop ? "1" : "0";
-				output.Write(pop);
+				output.Write(bit);
 			}
 		}
 
@@ -68,16 +70,18 @@ namespace Rhea.Compression.Huffman
 				writer.Write("    ");
 			}
 			writer.Write('-');
-			node.TraverseUp(_path.Value);
 
 			if (node.IsBranch)
 				writer.Write(" {0} '{2}' x {1:4} = ", tag, node.Freq, (char)node.Symbol);
 			else
 				writer.Write(" {1} Freq {0} = ", node.Freq, tag);
 
-			while (_path.Value.Count > 0)
+			if (node.IsBranch == false)
 			{
-				writer.Write(_path.Value.Pop() ? "1" : "0");
+				foreach (var bit in node.Bits)
+				{
+					writer.Write(bit ? "1" : "0");
+				}
 			}
 
 			writer.WriteLine();

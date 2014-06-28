@@ -12,6 +12,7 @@ namespace Rhea.Compression.Huffman
 		public HuffmanNode Parent;
 		public HuffmanNode Right;
 		public HuffmanNode Left;
+		public Stack<bool> Bits; 
 
 		public HuffmanNode(int symbol, int freq)
 		{
@@ -20,6 +21,7 @@ namespace Rhea.Compression.Huffman
 		}
 
 		public bool IsBranch { get { return Symbol == -1; } }
+		public int BitPattern { get; set; }
 
 		protected bool Equals(HuffmanNode other)
 		{
@@ -52,15 +54,26 @@ namespace Rhea.Compression.Huffman
 			return i*-1;
 		}
 
-		public void TraverseUp(Stack<bool> path)
+		public void SetupBitPattern()
 		{
+			if (Symbol == 6)
+			{
+				
+			}
+			BitPattern = 0;
+			Bits = new Stack<bool>();
+			
 			var curr = this;
 			while (curr.Parent != null)
 			{
 				var parent = curr.Parent;
-				path.Push(ReferenceEquals(parent.Right, curr));
+				BitPattern <<= 1;
+				var isRight = ReferenceEquals(parent.Right, curr);
+				Bits.Push(isRight);
+				BitPattern |= isRight ? 1 : 0;
 				curr = parent;
 			}
+			
 		}
 
 		public override string ToString()
