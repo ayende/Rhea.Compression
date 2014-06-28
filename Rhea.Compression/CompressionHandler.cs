@@ -31,5 +31,15 @@ namespace Rhea.Compression
 				return outputBitStream.Length / 8;
 			}
 		}
+
+		public byte[] Decompress(Stream compressed)
+		{
+			using (var intputBitStream = new InputBitStream(compressed, leaveOpen: true))
+			{
+				var unpacker = new SubstringUnpacker(_dictionary);
+				_packer.Unpack(intputBitStream, unpacker);
+				return unpacker.UncompressedData();
+			}
+		}
 	}
 }

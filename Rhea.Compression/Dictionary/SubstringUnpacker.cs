@@ -26,9 +26,9 @@ namespace Rhea.Compression.Dictionary
             buffer.SetLength(0);
         }
 
-        public ArraySegment<byte> UncompressedData()
+        public byte[] UncompressedData()
         {
-            return new ArraySegment<byte>(buffer.GetBuffer(),0, (int)buffer.Length);
+	        return buffer.ToArray();
         } 
 
         public void EncodeLiteral(byte aByte)
@@ -53,21 +53,18 @@ namespace Rhea.Compression.Dictionary
 
                 if (endDict - startDict > 0)
                 {
-                    Console.WriteLine(Encoding.UTF8.GetString(dictionary, startDict, endDict - startDict));
                     buffer.Write(dictionary, startDict, endDict - startDict);
                 }
 
                 if (end > 0)
                 {
                     var bytes = buffer.GetBuffer();
-                    Console.WriteLine(Encoding.UTF8.GetString(bytes, 0, end));
                     buffer.Write(bytes, 0, end);
                 }
             }
             else
             {
                 var bytes = buffer.GetBuffer();
-                Console.WriteLine(Encoding.UTF8.GetString(bytes, currentIndex+offset, length));
                 buffer.Write(bytes, currentIndex + offset, length);
             }
         }

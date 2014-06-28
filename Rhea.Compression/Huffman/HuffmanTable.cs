@@ -38,7 +38,6 @@ namespace Rhea.Compression.Huffman
 		public void Write(int symbol, OutputBitStream output)
 		{
 			var huffmanNode = _leaves[symbol];
-			Console.WriteLine("'{0}' {3} {1} {2}", (char)symbol, huffmanNode.BitPattern, huffmanNode.Bits.Count, symbol);
 			foreach (var bit in huffmanNode.Bits)
 			{
 				output.Write(bit);

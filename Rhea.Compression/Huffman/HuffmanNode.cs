@@ -56,10 +56,6 @@ namespace Rhea.Compression.Huffman
 
 		public void SetupBitPattern()
 		{
-			if (Symbol == 6)
-			{
-				
-			}
 			BitPattern = 0;
 			Bits = new Stack<bool>();
 			

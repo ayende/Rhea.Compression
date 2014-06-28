@@ -41,12 +41,19 @@ namespace Rhea.Tryouts
 	        var compressionHandler = trainCompression.CreateHandler(1024);
 
 	        var memoryStream = new MemoryStream();
-	        var text = "{'id':52,'name':'Christina Murray','country':'Hong Kong','email':'cmurray@brainsphere.gov'}";
-	        var result = compressionHandler.Compress(text, memoryStream);
+	        const string text = "{'id':52,'name':'Christina Murray','country':'Hong Kong','email':'cmurray@brainsphere.gov'}";
+	        compressionHandler.Compress(text, memoryStream);
 
 	        Console.WriteLine(text.Length);
-	        Console.WriteLine(result);
 	        Console.WriteLine(memoryStream.Length);
+	        memoryStream.Position = 0;
+	        var decompressed = compressionHandler.Decompress(memoryStream);
+
+	        Console.WriteLine(text);
+	        Console.WriteLine(Encoding.UTF8.GetString(decompressed));
+
+	        Console.WriteLine(decompressed.Length);
+
         }
     }
 }
