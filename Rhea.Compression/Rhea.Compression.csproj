@@ -36,8 +36,6 @@
   <ItemGroup>
     <Compile Include="CompressionHandler.cs" />
     <Compile Include="HuffmanPacker.cs" />
-    <Compile Include="Debug\DebugPackerOutput.cs" />
-    <Compile Include="Debug\DebugUnpackerOutput.cs" />
     <Compile Include="Dictionary\DictionaryOptimizer.cs" />
     <Compile Include="Huffman\HuffmanNode.cs" />
     <Compile Include="Huffman\HuffmanTable.cs" />
