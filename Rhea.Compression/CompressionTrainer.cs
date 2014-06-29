@@ -20,7 +20,7 @@ namespace Rhea.Compression
 			_dictionaryOptimizer.Add(doc);
 		}
 
-		public CompressionHandler CreateHandler(int desiredLength)
+        public CompressionHandler CreateHandler(int desiredLength = 1024*32)
 		{
 			var dictionary = _dictionaryOptimizer.Optimize(desiredLength);
 			var training = new SubstringPacker(dictionary);

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Rhea.Compression;
@@ -9,54 +11,70 @@ namespace Rhea.Tryouts
     {
         static void Main(string[] args)
         {
-			var trainer = new CompressionTrainer();
-            var docs = new[]
-            {
-              "{'id':1,'name':'Ryan Peterson','country':'Northern Mariana Islands','email':'rpeterson@youspan.mil'}",
-                "{'id':2,'name':'Judith Mason','country':'Puerto Rico','email':'jmason@quatz.com'}",
-                "{'id':3,'name':'Kenneth Berry','country':'Pakistan','email':'kberry@wordtune.mil'}",
-                "{'id':4,'name':'Judith Ortiz','country':'Cuba','email':'jortiz@snaptags.edu'}",
-                "{'id':5,'name':'Adam Lewis','country':'Poland','email':'alewis@muxo.mil'}",
-                "{'id':6,'name':'Angela Spencer','country':'Poland','email':'aspencer@jabbersphere.info'}",
-                "{'id':7,'name':'Jason Snyder','country':'Cambodia','email':'jsnyder@voomm.net'}",
-                "{'id':8,'name':'Pamela Palmer','country':'Guinea-Bissau','email':'ppalmer@rooxo.name'}",
-                "{'id':9,'name':'Mary Graham','country':'Niger','email':'mgraham@fivespan.mil'}",
-                "{'id':10,'name':'Christopher Brooks','country':'Trinidad and Tobago','email':'cbrooks@blogtag.name'}",
-                "{'id':11,'name':'Anna West','country':'Nepal','email':'awest@twinte.gov'}",
-                "{'id':12,'name':'Angela Watkins','country':'Iceland','email':'awatkins@izio.com'}",
-                "{'id':13,'name':'Gregory Coleman','country':'Oman','email':'gcoleman@browsebug.net'}",
-                "{'id':14,'name':'Andrew Hamilton','country':'Ukraine','email':'ahamilton@rhyzio.info'}",
-                "{'id':15,'name':'James Patterson','country':'Poland','email':'jpatterson@skippad.net'}",
-                "{'id':16,'name':'Patricia Kelley','country':'Papua New Guinea','email':'pkelley@meetz.biz'}",
-                "{'id':17,'name':'Annie Burton','country':'Germany','email':'aburton@linktype.com'}",
-                "{'id':18,'name':'Margaret Wilson','country':'Saudia Arabia','email':'mwilson@brainverse.mil'}",
-                "{'id':19,'name':'Louise Harper','country':'Poland','email':'lharper@skinder.info'}",
-                "{'id':20,'name':'Henry Hunt','country':'Martinique','email':'hhunt@thoughtstorm.org'}"
-        		
-            };
+            var json = File.ReadAllLines(@"C:\Users\Ayende\Downloads\RadnomUsers\RadnomUsers.json");
 
-            foreach (var doc in docs)
+            //var trainer = new CompressionTrainer();
+
+            //for (int i = 0; i < json.Length/100; i++)
+            //{
+            //    trainer.TrainOn(json[i*100]);
+            //}
+
+            //var compressionHandler = trainer.CreateHandler();
+
+            //using (var file = File.Create("compression.dic"))
+            //{
+            //    compressionHandler.Save(file);
+            //    file.Flush();
+            //}
+            //return;
+
+            CompressionHandler compressionHandler;
+            using (var file = File.OpenRead("compression.dic"))
             {
-                trainer.TrainOn(doc);
+                compressionHandler = CompressionHandler.Load(file);
             }
 
+            var items = new List<byte[]>();
+            int size = 0;
+            int compressedSize = 0;
+            var ms = new MemoryStream();
+            int count = 0;
+            foreach (var s in json)
+            {
+                if (count++%1000 == 0)
+                    Console.WriteLine(count);
+                size += s.Length;
+                ms.SetLength(0);
+                compressedSize += compressionHandler.Compress(s, ms);
+                items.Add(ms.ToArray());
+            }
 
-            var compressionHandler = trainer.CreateHandler(64 * 1024);
+            //Console.WriteLine(size);
+            //Console.WriteLine(compressedSize);
 
-	        var memoryStream = new MemoryStream();
-            const string text = "{'id':31,'name':'Albert Myers','country':'British Virgin Islands','email':'amyers@centimia.mil'},";
-	        compressionHandler.Compress(text, memoryStream);
+            for (int i = 0; i < items.Count; i++)
+            {
+                if(count-- % 1000 == 0)
+                    Console.WriteLine(count);
+                var memoryStream = new MemoryStream(items[i]);
+                var decompress = compressionHandler.Decompress(memoryStream);
+                Debug.Assert(decompress.Length == json[i].Length);
 
-            Console.WriteLine(text.Length);
-            Console.WriteLine(memoryStream.Length);
+                for (int j = 0; j < decompress.Length; j++)
+                {
+                    if (((char)decompress[j] != json[i][j]))
+                    {
+                        Console.WriteLine("BAD");
 
-	        memoryStream.Position = 0;
-	        var decompressed = compressionHandler.Decompress(memoryStream);
+                        Console.WriteLine(json[i]);
+                        Console.WriteLine(Encoding.UTF8.GetString(decompress));
+                        break;
+                    }
+                }
+            }
 
-
-
-            Console.WriteLine(text);
-            Console.WriteLine(Encoding.UTF8.GetString(decompressed));
+            Console.WriteLine("All good");
         }
     }
 }

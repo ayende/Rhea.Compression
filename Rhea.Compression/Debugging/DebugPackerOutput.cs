@@ -39,7 +39,6 @@ namespace Rhea.Compression.Debugging
         {
             var textWriter = (TextWriter)context;
             FlushBuffer(textWriter);
-            textWriter.WriteLine();
         }
     }
 }

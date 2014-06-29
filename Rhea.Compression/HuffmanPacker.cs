@@ -13,7 +13,29 @@ namespace Rhea.Compression
 
 		private const int EofMarker = 512;
 
-		public HuffmanPacker(HuffmanTable symbols, HuffmanTable[] offsets)
+	    public void Save(BinaryWriter writer)
+	    {
+	        symbols.Save(writer);
+            writer.Write7BitEncodedInt(offsets.Length);
+	        foreach (var offset in offsets)
+	        {
+	            offset.Save(writer);
+	        }
+	    }
+
+	    public static HuffmanPacker Load(BinaryReader reader)
+	    {
+	        var symbols = HuffmanTable.Load(reader);
+	        var len = reader.Read7BitEncodedInt();
+	        var offsets = new HuffmanTable[len];
+	        for (int i = 0; i < len; i++)
+	        {
+                offsets[i] = HuffmanTable.Load(reader);
+	        }
+	        return new HuffmanPacker(symbols, offsets);
+	    }
+
+	    public HuffmanPacker(HuffmanTable symbols, HuffmanTable[] offsets)
 		{
 			this.symbols = symbols;
 			this.offsets = offsets;

@@ -59,13 +59,19 @@ namespace Rhea.Compression.Dictionary
                 if (end > 0)
                 {
                     var bytes = buffer.GetBuffer();
-                    buffer.Write(bytes, 0, end);
+                    for (int i = 0; i < end; i++)
+                    {
+                        buffer.WriteByte(bytes[i]);
+                    }
                 }
             }
             else
             {
                 var bytes = buffer.GetBuffer();
-                buffer.Write(bytes, currentIndex + offset, length);
+                for (int i = 0; i < length; i++)
+                {
+                    buffer.WriteByte(bytes[i + currentIndex + offset]);
+                }
             }
         }
     }
