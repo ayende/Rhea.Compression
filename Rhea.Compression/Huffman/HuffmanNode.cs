@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Rhea.Compression.Huffman
 {
-	public class HuffmanNode : IComparable<HuffmanNode>
+	public class HuffmanNode
 	{
 		public readonly int Symbol;
 		public readonly int Freq;
@@ -22,37 +22,6 @@ namespace Rhea.Compression.Huffman
 
 		public bool IsBranch { get { return Symbol == -1; } }
 		public int BitPattern { get; set; }
-
-		protected bool Equals(HuffmanNode other)
-		{
-			if (Symbol == -1)
-				return ReferenceEquals(this, other);
-			return Symbol == other.Symbol;
-		}
-
-		public override bool Equals(object obj)
-		{
-			if (ReferenceEquals(null, obj)) return false;
-			if (ReferenceEquals(this, obj)) return true;
-			if (obj.GetType() != this.GetType()) return false;
-			return Equals((HuffmanNode) obj);
-		}
-
-		public override int GetHashCode()
-		{
-			if (Symbol == -1)
-				// ReSharper disable once BaseObjectGetHashCodeCallInGetHashCode
-				return base.GetHashCode();
-			return Symbol;
-		}
-
-		public int CompareTo(HuffmanNode other)
-		{
-			int i = Freq - other.Freq;
-			if (i == 0)
-				i = Symbol - other.Symbol;
-			return i*-1;
-		}
 
 		public void SetupBitPattern()
 		{

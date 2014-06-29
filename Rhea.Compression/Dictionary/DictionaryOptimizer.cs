@@ -22,11 +22,11 @@ namespace Rhea.Compression.Dictionary
         private byte[] bytes;
 	    private List<byte[]> _documents = new List<byte[]>();
 
-
         public void Add(byte[] doc)
         {
             starts.Add((int)stream.Position);
-            stream.Write(doc, 0, doc.Length);
+
+             stream.Write(doc, 0, doc.Length);
 			_documents.Add(doc);
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using Rhea.Compression.Dictionary;
 using Rhea.Compression.Huffman;
 
@@ -22,7 +23,6 @@ namespace Rhea.Compression
 		public CompressionHandler CreateHandler(int desiredLength)
 		{
 			var dictionary = _dictionaryOptimizer.Optimize(desiredLength);
-			
 			var training = new SubstringPacker(dictionary);
 
 			var huffmanTableTrainer = new HuffmanTableTrainer();
@@ -65,7 +65,8 @@ namespace Rhea.Compression
 
 				for (int i = 0; i < offsets.Length; i++)
 				{
-					offsets[i][(offset >> (i*4)) & 0xf]++;
+				    var offsetNibble = (offset >> (i*4)) & 0xf;
+				    offsets[i][offsetNibble]++;
 				}
 			}
 

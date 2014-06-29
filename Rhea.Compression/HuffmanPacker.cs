@@ -28,7 +28,7 @@ namespace Rhea.Compression
 		{
 			var outputBitStream = (OutputBitStream)context;
 			symbols.Write(length + 256, outputBitStream);
-
+		    
 			offset = -offset;
 			for (int i = 0; i < offsets.Length; i++)
 			{

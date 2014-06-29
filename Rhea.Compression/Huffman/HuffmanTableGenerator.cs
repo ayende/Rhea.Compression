@@ -16,7 +16,7 @@ namespace Rhea.Compression.Huffman
 
 		public HuffmanTable Build()
 		{
-			var leaves = new Queue<HuffmanNode>(_leaves.Values.OrderBy(x=>x));
+			var leaves = new Queue<HuffmanNode>(_leaves.Values.OrderBy(node => node.Freq == 0 ? 1 : node.Freq));
 			var branches = new Queue<HuffmanNode>();
 
 			while (leaves.Count + branches.Count > 1)

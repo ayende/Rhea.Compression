@@ -15,32 +15,37 @@
  */
 
 using System;
-using System.Collections.Generic;
 
 namespace Rhea.Compression.Dictionary
 {
     public class SubstringArray
     {
-
-        private List<int> indexes = new List<int>();
-        private List<int> lengths = new List<int>();
-        private List<int> scores = new List<int>();
-        private int size;
         private int capacity;
+        private int[] indexes;
+        private int[] lengths;
+        private int[] scores;
+        private int size;
 
         public SubstringArray(int capacity)
         {
-            SetScore(capacity, 0, 0, 0);
+            this.capacity = capacity;
+            indexes = new int[capacity];
+            lengths = new int[capacity];
+            scores = new int[capacity];
+        }
+
+        public int Size
+        {
+            get { return size; }
         }
 
         public void Sort()
         {
-            int[] histogram = new int[256];
-            SubstringArray working = new SubstringArray(size);
+            var histogram = new int[256];
+            var working = new SubstringArray(size);
 
             for (int bitOffset = 0; bitOffset <= 24; bitOffset += 8)
             {
-
                 if (bitOffset > 0)
                 {
                     for (int j = 0; j < histogram.Length; j++)
@@ -68,11 +73,11 @@ namespace Rhea.Compression.Dictionary
                     int sortValue = scores[i];
                     int sortByte = (sortValue >> bitOffset) & 0xff;
                     int newOffset = histogram[sortByte]++;
-                    working.SetScore(newOffset, indexes[i], lengths[i], this.scores[i]);
+                    working.SetScore(newOffset, indexes[i], lengths[i], scores[i]);
                 }
 
                 // swap (brain transplant) innards
-                List<int> t = working.indexes;
+                int[] t = working.indexes;
                 working.indexes = indexes;
                 indexes = t;
 
@@ -103,23 +108,27 @@ namespace Rhea.Compression.Dictionary
         {
             if (i >= capacity)
             {
-                int growBy = (((i - capacity) / (8 * 1024)) + 1) * 8 * 1024;
+                int growBy = (((i - capacity)/(8*1024)) + 1)*8*1024;
+                // Since this array is going to be VERY big, don't double.        
 
-                foreach (var list in new[] { indexes, lengths, scores})
-                {
-                    list.Capacity += growBy;
-                    for (int j = list.Count; j < list.Capacity; j++)
-                    {
-                        list.Add(0);
-                    }
-                }
+                var newindex = new int[indexes.Length + growBy];
+                Array.Copy(indexes, 0, newindex, 0, indexes.Length);
+                indexes = newindex;
 
-                capacity += growBy;
+                var newlength = new int[lengths.Length + growBy];
+                Array.Copy(lengths, 0, newlength, 0, lengths.Length);
+                lengths = newlength;
+
+                var newscores = new int[scores.Length + growBy];
+                Array.Copy(scores, 0, newscores, 0, scores.Length);
+                scores = newscores;
+
+                capacity = indexes.Length;
             }
 
-            this.indexes[i] = index;
-            this.lengths[i] = length;
-            this.scores[i] = score;
+            indexes[i] = index;
+            lengths[i] = length;
+            scores[i] = score;
 
             size = Math.Max(i + 1, size);
 
@@ -128,15 +137,10 @@ namespace Rhea.Compression.Dictionary
 
         public void Remove(int i)
         {
-            indexes.Remove(i);
-            lengths.Remove(i);
-            scores.Remove(i);
+            Array.Copy(indexes, i + 1, indexes, i, size - i - 1);
+            Array.Copy(lengths, i + 1, lengths, i, size - i - 1);
+            Array.Copy(scores, i + 1, scores, i, size - i - 1);
             size--;
-        }
-
-        public int Size
-        {
-            get { return size; }
         }
 
         public int Index(int i)
@@ -185,13 +189,14 @@ namespace Rhea.Compression.Dictionary
      * Costs n characters to include in the compression dictionary, so compute a "per character consumed in the compression dictionary" benefit.
      * score = m*(n-3)/n
      */
+
         private int ComputeScore(int length, int count)
         {
             if (length <= 3)
             {
                 return 0;
             }
-            return (100 * count * (length - 3)) / length;
+            return (100*count*(length - 3))/length;
         }
     }
 }
