@@ -6,7 +6,7 @@
 
 using System;
 
-namespace Rhea.Compression
+namespace Rhea.Compression.Dictionary
 {
 
     public class SubstringPacker

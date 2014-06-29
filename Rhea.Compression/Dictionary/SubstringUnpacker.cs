@@ -5,11 +5,10 @@
 // -----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Rhea.Compression
+namespace Rhea.Compression.Dictionary
 {
 
     public class SubstringUnpacker
@@ -27,9 +26,9 @@ namespace Rhea.Compression
             buffer.SetLength(0);
         }
 
-        public ArraySegment<byte> UncompressedData()
+        public byte[] UncompressedData()
         {
-            return new ArraySegment<byte>(buffer.GetBuffer(),0, (int)buffer.Length);
+	        return buffer.ToArray();
         } 
 
         public void EncodeLiteral(byte aByte)

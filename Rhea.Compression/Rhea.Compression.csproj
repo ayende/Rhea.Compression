@@ -32,22 +32,26 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DebugPackerOutput.cs" />
-    <Compile Include="DictionaryOptimizer.cs" />
-    <Compile Include="IPackerOutput.cs" />
-    <Compile Include="PrefixHash.cs" />
+    <Compile Include="CompressionHandler.cs" />
+    <Compile Include="HuffmanPacker.cs" />
+    <Compile Include="Debug\DebugPackerOutput.cs" />
+    <Compile Include="Debug\DebugUnpackerOutput.cs" />
+    <Compile Include="Dictionary\DictionaryOptimizer.cs" />
+    <Compile Include="Huffman\HuffmanNode.cs" />
+    <Compile Include="Huffman\HuffmanTable.cs" />
+    <Compile Include="Huffman\HuffmanTableGenerator.cs" />
+    <Compile Include="Huffman\InputBitStream.cs" />
+    <Compile Include="Huffman\OutputBitStream.cs" />
+    <Compile Include="Dictionary\IPackerOutput.cs" />
+    <Compile Include="Dictionary\PrefixHash.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringPacker.cs" />
-    <Compile Include="SubstringUnpacker.cs" />
-    <Compile Include="SubstringArray.cs" />
-    <Compile Include="SuffixArray.cs" />
+    <Compile Include="Dictionary\SubstringPacker.cs" />
+    <Compile Include="Dictionary\SubstringUnpacker.cs" />
+    <Compile Include="Dictionary\SubstringArray.cs" />
+    <Compile Include="Dictionary\SuffixArray.cs" />
+    <Compile Include="CompressionTrainer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ReadMe.txt" />

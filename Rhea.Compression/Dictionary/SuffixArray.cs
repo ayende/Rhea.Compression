@@ -29,7 +29,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace Rhea.Compression
+namespace Rhea.Compression.Dictionary
 {
     public class SuffixArray {
 

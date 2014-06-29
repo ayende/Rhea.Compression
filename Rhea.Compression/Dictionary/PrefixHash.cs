@@ -7,7 +7,7 @@
 using System;
 using System.IO;
 
-namespace Rhea.Compression
+namespace Rhea.Compression.Dictionary
 {
     public class PrefixHash
     {

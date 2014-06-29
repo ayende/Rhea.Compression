@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Rhea.Compression
+namespace Rhea.Compression.Dictionary
 {
     public class DictionaryOptimizer
     {
@@ -20,14 +20,22 @@ namespace Rhea.Compression
         private int[] lcp;
         private SubstringArray substrings;
         private byte[] bytes;
+	    private List<byte[]> _documents = new List<byte[]>();
+
 
         public void Add(byte[] doc)
         {
             starts.Add((int)stream.Position);
             stream.Write(doc, 0, doc.Length);
+			_documents.Add(doc);
         }
 
-        public void Add(string doc)
+	    public IEnumerable<byte[]> Documents
+	    {
+		    get { return _documents; }
+	    }
+
+	    public void Add(string doc)
         {
             Add(Encoding.UTF8.GetBytes(doc));
         }
