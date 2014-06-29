@@ -54,21 +54,18 @@ namespace Rhea.Compression
 
                 if (endDict - startDict > 0)
                 {
-                    Console.WriteLine(Encoding.UTF8.GetString(dictionary, startDict, endDict - startDict));
                     buffer.Write(dictionary, startDict, endDict - startDict);
                 }
 
                 if (end > 0)
                 {
                     var bytes = buffer.GetBuffer();
-                    Console.WriteLine(Encoding.UTF8.GetString(bytes, 0, end));
                     buffer.Write(bytes, 0, end);
                 }
             }
             else
             {
                 var bytes = buffer.GetBuffer();
-                Console.WriteLine(Encoding.UTF8.GetString(bytes, currentIndex+offset, length));
                 buffer.Write(bytes, currentIndex + offset, length);
             }
         }
